@@ -1,0 +1,20 @@
+
+Commit-History:
+---------------
+
+----------------------------------------------------------------------------------------------------
+Time Stamp: 4th October 2K22, 02:03 PM..!!
+
+Init Commit - Base Established for Task Killer Android App.
+
+1. Custom Accessibility Service 'TaskKillerAccessibilityService' which is responsible for performing
+    'Force Stop' event in Application Settings activity for specific 3rd party application packages.
+    simulateForceStop(), simulateOKBtnClicked()
+
+2. PermissionHelper Utility Class -> Handles permission related tasks.
+    including:  isAccessibilityPermissionAvailable(), promptForAccessibilityPermission()
+
+3. PackageHelper Utility Class -> Handles package related tasks.
+    including:  listMyRunningAppProcesses(), listAllPackages(), killBackgroundProcesses(packagesToBeKilled)
+
+----------------------------------------------------------------------------------------------------
