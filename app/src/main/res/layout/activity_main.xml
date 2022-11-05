@@ -8,6 +8,30 @@
     tools:context=".activity.MainActivity">
 
     <Button
+        android:id="@+id/idConnectServiceBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Connect"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toTopOf="@id/idDisconnectServiceBtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:onClick="onConnectBtnClickListener"
+        tools:ignore="HardcodedText" />
+    <Button
+        android:id="@+id/idDisconnectServiceBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Disconnect"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toTopOf="@id/idPowerKillBtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/idConnectServiceBtn"
+        android:onClick="onDisconnectBtnClickListener"
+        tools:ignore="HardcodedText" />
+    <Button
         android:id="@+id/idPowerKillBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -16,7 +40,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/idDisconnectServiceBtn"
         android:onClick="onPowerKillBtnClickListener"
         tools:ignore="HardcodedText" />
 

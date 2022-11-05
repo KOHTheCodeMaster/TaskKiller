@@ -6,7 +6,6 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.util.Log;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class PackageHelper {
@@ -22,6 +21,7 @@ public class PackageHelper {
         this.packageManager = context.getPackageManager();
     }
 
+/*
     public void demoAll() {
 
         listMyRunningAppProcesses();
@@ -36,8 +36,7 @@ public class PackageHelper {
         killBackgroundProcesses(packagesToBeKilled);
 
     }
-
-    //
+*/
 
     /**
      * Get the list of processes only for the current package.

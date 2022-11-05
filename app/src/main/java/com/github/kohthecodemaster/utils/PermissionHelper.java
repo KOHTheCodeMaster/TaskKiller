@@ -19,6 +19,29 @@ public class PermissionHelper {
      *
      * @return true when Accessibility Permission is available, Otherwise false.
      */
+    public static boolean isAccessibilityPermissionNOTAvailable(Context context) {
+
+        try {
+            int temp = Settings.Secure.getInt(
+                    context.getContentResolver(),
+                    Settings.Secure.ACCESSIBILITY_ENABLED
+            );
+
+            return temp != 1;   //  1 -> Accessibility Permission is enabled
+
+        } catch (Settings.SettingNotFoundException e) {
+            e.printStackTrace();
+            Log.e(TAG, "isAccessibilityPermissionAvailable: Error finding setting, default accessibility is not found: " + e.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Check if the user has permitted the accessibility permission or not.
+     *
+     * @return true when Accessibility Permission is available, Otherwise false.
+     */
+    @Deprecated
     public boolean isAccessibilityPermissionAvailable() {
 
         try {
@@ -26,10 +49,6 @@ public class PermissionHelper {
                     context.getContentResolver(),
                     Settings.Secure.ACCESSIBILITY_ENABLED
             );
-            if (temp == 1)
-                Log.v(TAG, "isAccessibilityPermissionAvailable: Accessibility Permission Available.");
-            else
-                Log.v(TAG, "isAccessibilityPermissionAvailable: Accessibility Permission Required.");
             return temp == 1;
         } catch (Settings.SettingNotFoundException e) {
             e.printStackTrace();
