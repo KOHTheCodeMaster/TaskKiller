@@ -13,10 +13,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.github.kohthecodemaster.R;
 import com.github.kohthecodemaster.misc.TKServiceBinder;
-import com.github.kohthecodemaster.misc.TaskKillerServiceConnection;
 import com.github.kohthecodemaster.pojo.TaskPojo;
 import com.github.kohthecodemaster.service.TaskKillerAccessibilityService;
-import com.github.kohthecodemaster.utils.PackageHelper;
 import com.github.kohthecodemaster.utils.PermissionHelper;
 
 import java.util.ArrayList;
@@ -26,10 +24,8 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "L0G-MainActivity";
     private PermissionHelper permissionHelper;
-    private PackageHelper packageHelper;
     private TaskKillerAccessibilityService taskKillerAccessibilityService;
     private AlertDialog.Builder alertDialogBuilder;
-    private TaskKillerServiceConnection taskKillerServiceConnection;
     public static TKServiceBinder tkServiceBinder;
 
     List<TaskPojo> tasksToBeKilled;
@@ -41,9 +37,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Log.v(TAG, "onCreate: Begin.");
+//        Log.v(TAG, "onCreate: Begin.");
         this.major();
-        Log.v(TAG, "onCreate: End.");
+//        Log.v(TAG, "onCreate: End.");
 
     }
 
@@ -87,8 +83,7 @@ public class MainActivity extends AppCompatActivity {
 //        Log.v(TAG, "init: Begin.");
 
         permissionHelper = new PermissionHelper(getApplicationContext());
-        packageHelper = new PackageHelper(getApplicationContext());
-        taskKillerServiceConnection = new TaskKillerServiceConnection();
+//        PackageHelper packageHelper = new PackageHelper(getApplicationContext());
 //        taskKillerAccessibilityService = TaskKillerAccessibilityService.getServiceInstance();
 
         initializeBuilderAlertDialog();

@@ -1,10 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <accessibility-service xmlns:android="http://schemas.android.com/apk/res/android"
-    android:accessibilityEventTypes="typeAllMask"
+    android:accessibilityEventTypes="typeWindowStateChanged|typeViewClicked"
     android:accessibilityFeedbackType="feedbackSpoken"
-    android:accessibilityFlags="flagDefault"
+    android:accessibilityFlags="flagReportViewIds"
     android:canRetrieveWindowContent="true"
     android:description="@string/accessibility_service_description"
     android:notificationTimeout="100"
-    android:packageNames="com.example.android.apis"
-    android:settingsActivity="com.example.android.accessibility.ServiceSettingsActivity" />
+    android:packageNames="com.android.settings" />
+
+    <!--
+        android:settingsActivity="com.example.android.accessibility.ServiceSettingsActivity"
+
+        Flags:
+        android:accessibilityFlags="flagDefault"
+        android:accessibilityFlags="flagReportViewIds"
+
+        Sample:
+        android:description="@string/accessibility_service_description"
+        android:accessibilityEventTypes="typeWindowsChanged|typeWindowContentChanged|typeViewScrolled"
+        android:accessibilityFlags="flagReportViewIds"
+        android:canRetrieveWindowContent="true"
+        android:accessibilityFeedbackType="feedbackGeneric"
+        android:notificationTimeout="1000"
+        android:settingsActivity="com.moba11y.basicaccessibilityservice.SettingsActivity"
+    -->

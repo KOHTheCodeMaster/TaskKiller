@@ -7,88 +7,22 @@ import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
-import com.github.kohthecodemaster.activity.MainActivity;
-import com.github.kohthecodemaster.misc.TKServiceBinder;
-
-import java.util.List;
+import com.github.kohthecodemaster.utils.SimulationHelper;
 
 public class TaskKillerAccessibilityService extends AccessibilityService {
 
     private static final String TAG = "L0G-TaskKillerAccessibilityService";
-    private static volatile TaskKillerAccessibilityService service;
-    public static TKServiceBinder tkServiceBinder;
-
-    static {
-        tkServiceBinder = MainActivity.tkServiceBinder;
-    }
 
     @Override
     public void onServiceConnected() {
 
         Log.v(TAG, "onServiceConnected: Begin.");
 
-//        getServiceInstance();
-
-        this.setServiceInfo(getConfiguredServiceInfo());
-
-        tkServiceBinder.emitService(this);
+        //  Configuration done via accessibility_service_config.xml imported in Android Manifest
+//        this.setServiceInfo(getConfiguredServiceInfo());
 
         Log.v(TAG, "onServiceConnected: End.");
 
-    }
-
-    public TaskKillerAccessibilityService getServiceInstance() {
-
-//        Log.v(TAG, "getServiceInstance: Invoked.");
-
-        if (service == null) {
-            synchronized (TaskKillerAccessibilityService.class) {
-                if (service == null) {
-                    service = new TaskKillerAccessibilityService();
-                    service.setServiceInfo(getConfiguredServiceInfo());
-                } else {
-                    Log.v(TAG, "[WARNING] getServiceInstance: Else Block Invoked.");
-                }
-            }
-        }
-
-        Log.v(TAG, "getServiceInstance: Service - " + service);
-        return service;
-    }
-
-    public static AccessibilityServiceInfo getConfiguredServiceInfo() {
-
-//        Log.v(TAG, "getConfiguredServiceInfo: Begin.");
-
-        AccessibilityServiceInfo accessibilityServiceInfo = new AccessibilityServiceInfo();
-
-        // Set the type of events that this service wants to listen to.
-        accessibilityServiceInfo.eventTypes = AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED
-//                | AccessibilityEvent.TYPE_VIEW_CLICKED
-//                | AccessibilityEvent.TYPE_VIEW_FOCUSED
-//                | AccessibilityEvent.TYPES_ALL_MASK
-        ;
-        // Set the type of feedback your service will provide.
-        accessibilityServiceInfo.feedbackType = AccessibilityServiceInfo.FEEDBACK_SPOKEN;
-        accessibilityServiceInfo.notificationTimeout = 100;
-
-        /*
-            If you only want this service to work with specific applications, set their
-            package names here. Otherwise, when the service is activated, it will listen
-            to events from all applications.
-//        accessibilityServiceInfo.packageNames = new String[]{"abc123"};
-//        accessibilityServiceInfo.packageNames = new String[]{"android.settings"};
-         */
-        /*
-            Default services are invoked only if no package-specific ones are present
-            for the type of AccessibilityEvent generated. This service *is*
-            application-specific, so the flag isn't necessary. If this was a
-            general-purpose service, it would be worth considering setting the
-            DEFAULT flag.
-//         accessibilityServiceInfo.flags = AccessibilityServiceInfo.DEFAULT;
-        */
-//        Log.v(TAG, "getConfiguredServiceInfo: End.");
-        return accessibilityServiceInfo;
     }
 
     /**
@@ -101,17 +35,22 @@ public class TaskKillerAccessibilityService extends AccessibilityService {
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
 
+//        handleEvent1(event);
+        handleEvent2(event);
+
+    }
+
+    private void handleEvent1(AccessibilityEvent event) {
+
         Log.v(TAG, "onAccessibilityEvent: Begin.");
         if (AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED == event.getEventType()) {
             AccessibilityNodeInfo nodeInfo = event.getSource();
+            Log.v(TAG, "onAccessibilityEvent: 1.");
 
             if (nodeInfo == null) return;
+            Log.v(TAG, "onAccessibilityEvent: 2. nodeInfo != null");
 
-//            List<AccessibilityNodeInfo> nodeInfoForceStopList = nodeInfo.findAccessibilityNodeInfosByText("Force Stop");
-//            List<AccessibilityNodeInfo> nodeInfoOKList = nodeInfo.findAccessibilityNodeInfosByText("OK");
-
-            simulateForceStop(nodeInfo);
-//            simulateOKBtnClick(nodeInfo);
+            SimulationHelper.simulateForceStop(nodeInfo);
 
             // recycle the nodeInfo object
             nodeInfo.recycle();
@@ -121,74 +60,69 @@ public class TaskKillerAccessibilityService extends AccessibilityService {
 
     }
 
-    /**
-     * Firstly, Find the node with text "Force Stop" & then check if that node is clickable?
-     * if it's available then proceed for Simulation by performing CLICK Action on behalf of user to Force Stop the application.
-     *
-     * @param nodeInfo Source Node Info of the Accessibility Event
-     * @return true when Force Stop Btn. is clicked, Otherwise false.
-     */
-    private boolean simulateForceStop(AccessibilityNodeInfo nodeInfo) {
+    private void handleEvent2(AccessibilityEvent event) {
 
-        Log.v(TAG, "simulateForceStop: Begin Force Stop Simulation.");
-        List<AccessibilityNodeInfo> list;
+        Log.v(TAG, "handleEvent2: Begin.\nText - " + event.getText() +
+                "\nEvent Type - " + event.getEventType());
 
-        //  Find nodes with text "Force Stop"
-        //  this.getRootInActiveWindow() -> Get Root Window - Not sure about how to use this to find force stop btn Id.
-        list = nodeInfo.findAccessibilityNodeInfosByText("Force Stop");
-        if (list.isEmpty()) return false;
-
-        AccessibilityNodeInfo nodeForceStopBtn = list.get(0);
-        if (nodeForceStopBtn.isClickable()) {
-            nodeForceStopBtn.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-            Log.d(TAG, "simulateForceStop: Clicked on Force Stop Btn.");
-
-            return true;
+        AccessibilityNodeInfo nodeInfo = event.getSource();
+        if (nodeInfo == null) {
+            Log.v(TAG, "handleEvent2: 1. nodeInfo is NULL | packageName - "
+                    + event.getPackageName());
+            return;
         }
-        Log.v(TAG, "simulateForceStop: End.");
-        return false;
+
+        Log.v(TAG, "handleEvent2: 2. nodeInfo is NOT NULL | id - " + nodeInfo.getViewIdResourceName());
 
     }
 
-    /**
-     * Firstly, Find the node with text "OK" & then check if that node is clickable?
-     * if it's available then proceed for Simulation by performing CLICK Action on behalf of user to
-     * Click on OK Button in order to force stop the application.
-     *
-     * @param nodeInfo Source Node Info of the Accessibility Event
-     * @return true when OK Btn. is clicked, Otherwise false.
-     */
-    private boolean simulateOKBtnClick(AccessibilityNodeInfo nodeInfo) {
+    @Deprecated
+    public static AccessibilityServiceInfo getConfiguredServiceInfo() {
 
-//        Log.v(TAG, "simulateOKBtnClick: Begin.");
-        List<AccessibilityNodeInfo> list;
+//        Log.v(TAG, "getConfiguredServiceInfo: Begin.");
 
-        //We can find button using button name or button id
-        list = nodeInfo.findAccessibilityNodeInfosByText("OK");
-        if (list.isEmpty()) return false;
+        AccessibilityServiceInfo accessibilityServiceInfo = new AccessibilityServiceInfo();
 
-        AccessibilityNodeInfo nodeOKBtn = list.get(0);
-        if (nodeOKBtn.isClickable()) {
-            nodeOKBtn.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-            Log.d(TAG, "simulateOKBtnClick: Clicked on OK Btn.");
-            return true;
-        }
-//        Log.v(TAG, "simulateOKBtnClick: End.");
-        return false;
+        // Set the type of events that this service wants to listen to.
+        accessibilityServiceInfo.eventTypes = AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED
+//                | AccessibilityEvent.TYPE_VIEW_CLICKED
+//                | AccessibilityEvent.TYPE_VIEW_FOCUSED
+//                | AccessibilityEvent.TYPES_ALL_MASK
+        ;
 
+        // Set the type of feedback your service will provide.
+        accessibilityServiceInfo.feedbackType = AccessibilityServiceInfo.FEEDBACK_SPOKEN;
+        accessibilityServiceInfo.notificationTimeout = 100;
+        accessibilityServiceInfo.packageNames = new String[]{"com.android.settings"};
+        /*
+            If you only want this service to work with specific applications, set their
+            package names here. Otherwise, when the service is activated, it will listen
+            to events from all applications.
+//        accessibilityServiceInfo.packageNames = new String[]{"com.android.settings"};
+         */
+        /*
+            Default services are invoked only if no package-specific ones are present
+            for the type of AccessibilityEvent generated. This service *is*
+            application-specific, so the flag isn't necessary. If this was a
+            general-purpose service, it would be worth considering setting the
+            DEFAULT flag.
+         accessibilityServiceInfo.flags = AccessibilityServiceInfo.DEFAULT;
+        */
+//        Log.v(TAG, "getConfiguredServiceInfo: End.");
+        return accessibilityServiceInfo;
     }
 
     @Override
     public void onCreate() {
         // The service is being created
 //        Log.v(TAG, "onCreate: Invoked.");
+        Log.v(TAG, "onCreate: Invoked.");
     }
 
     @Override
     public boolean onUnbind(Intent intent) {
         // All clients have unbound with unbindService()
         Log.v(TAG, "onUnbind: Invoked.");
-        tkServiceBinder.emitService(null);
         return true;
     }
 
@@ -203,7 +137,6 @@ public class TaskKillerAccessibilityService extends AccessibilityService {
     public void onDestroy() {
         // The service is no longer used and is being destroyed
         Log.v(TAG, "onDestroy: Invoked.");
-        TaskKillerAccessibilityService.service = null;
     }
 
     @Override
