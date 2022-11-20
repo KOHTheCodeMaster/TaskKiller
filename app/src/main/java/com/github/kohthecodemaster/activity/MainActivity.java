@@ -29,7 +29,6 @@ public class MainActivity extends AppCompatActivity {
     public static TKServiceBinder tkServiceBinder;
 
     List<TaskPojo> tasksToBeKilled;
-    private boolean isServiceActive;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,8 +37,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 //        Log.v(TAG, "onCreate: Begin.");
+        Log.v(TAG, "onCreate: Begin. " + this.hashCode());
         this.major();
-//        Log.v(TAG, "onCreate: End.");
+        Log.v(TAG, "onCreate: End.");
 
     }
 
@@ -99,7 +99,6 @@ public class MainActivity extends AppCompatActivity {
             Log.d(TAG, "tkServiceBinder: Invoked.");
 //            MainActivity.this.taskKillerAccessibilityService = service;
             this.taskKillerAccessibilityService = service;
-            this.isServiceActive = service != null;
         };
     }
 

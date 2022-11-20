@@ -7,16 +7,19 @@ import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
-import com.github.kohthecodemaster.utils.SimulationHelper;
+import com.github.kohthecodemaster.activity.MainActivity;
 
 public class TaskKillerAccessibilityService extends AccessibilityService {
 
     private static final String TAG = "L0G-TaskKillerAccessibilityService";
+    SimulationService simulationService;
 
     @Override
     public void onServiceConnected() {
 
         Log.v(TAG, "onServiceConnected: Begin.");
+
+        simulationService = new SimulationService();
 
         //  Configuration done via accessibility_service_config.xml imported in Android Manifest
 //        this.setServiceInfo(getConfiguredServiceInfo());
@@ -35,44 +38,62 @@ public class TaskKillerAccessibilityService extends AccessibilityService {
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
 
-//        handleEvent1(event);
-        handleEvent2(event);
+//        testNodeInfoNotNull(event);
+        handleEventForSimulation(event);
+//        relaunchMainActivity();
 
     }
 
-    private void handleEvent1(AccessibilityEvent event) {
+    private void relaunchMainActivity() {
 
-        Log.v(TAG, "onAccessibilityEvent: Begin.");
+        // TODO: 20-11-2022 - Instead of creating new instance of Activity, try to bring existing
+        //  one in foreground and make use of it.
+
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); //  Creates new instance & invoked onCreate()
+/*
+        intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_NEW_TASK);
+*/
+        getApplicationContext().startActivity(intent);
+
+    }
+
+    private void handleEventForSimulation(AccessibilityEvent event) {
+
+//        Log.v(TAG, "handleEventForSimulation: Begin.");
         if (AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED == event.getEventType()) {
+
             AccessibilityNodeInfo nodeInfo = event.getSource();
-            Log.v(TAG, "onAccessibilityEvent: 1.");
-
             if (nodeInfo == null) return;
-            Log.v(TAG, "onAccessibilityEvent: 2. nodeInfo != null");
 
-            SimulationHelper.simulateForceStop(nodeInfo);
+            simulationService.simulateMajor(nodeInfo);
 
-            // recycle the nodeInfo object
-            nodeInfo.recycle();
+            if (simulationService.isOkClicked()) {
+                simulationService.resetFlags();
+                relaunchMainActivity();
+            }
 
         }
-        Log.v(TAG, "onAccessibilityEvent: End.");
+//        Log.v(TAG, "handleEventForSimulation: End.");
 
     }
 
-    private void handleEvent2(AccessibilityEvent event) {
+    private void testNodeInfoNotNull(AccessibilityEvent event) {
 
-        Log.v(TAG, "handleEvent2: Begin.\nText - " + event.getText() +
+        Log.v(TAG, "testNodeInfoNotNull: Begin.\nText - " + event.getText() +
                 "\nEvent Type - " + event.getEventType());
 
         AccessibilityNodeInfo nodeInfo = event.getSource();
         if (nodeInfo == null) {
-            Log.v(TAG, "handleEvent2: 1. nodeInfo is NULL | packageName - "
+            Log.v(TAG, "testNodeInfoNotNull: 1. nodeInfo is NULL | packageName - "
                     + event.getPackageName());
             return;
         }
 
-        Log.v(TAG, "handleEvent2: 2. nodeInfo is NOT NULL | id - " + nodeInfo.getViewIdResourceName());
+        Log.v(TAG, "testNodeInfoNotNull: 2. nodeInfo is NOT NULL | id - " + nodeInfo.getViewIdResourceName());
 
     }
 

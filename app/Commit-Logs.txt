@@ -3,6 +3,20 @@ Commit-History:
 ---------------
 
 ----------------------------------------------------------------------------------------------------
+Time Stamp: 20th November 2K22, 11:24 PM..!!
+
+5th Commit - SimulationService Added
+
+1. Force Stop Simulation is working fine as expected.
+
+2. Added EditText in MainActivity to keep track of EditText changes are retained or
+   whether MainActivity is recreated from scratch resetting EditText field as well.
+
+Pending:
+1. Need to Fix the flow due to launching MainActivity explicitly again from Service inorder to
+   close the settings activity once force stop simulation is complete.
+
+----------------------------------------------------------------------------------------------------
 Time Stamp: 4th October 2K22, 02:03 PM..!!
 
 Init Commit - Base Established for Task Killer Android App.
