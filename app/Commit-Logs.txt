@@ -3,6 +3,21 @@ Commit-History:
 ---------------
 
 ----------------------------------------------------------------------------------------------------
+Time Stamp: 23rd November 2K22, 11:37 PM..!!
+
+6th Commit - UI Added.
+
+1. Added RecyclerView, Adapter, TaskRowPojo to display installed applications in UI
+   along with Icon, Title and Checkbox.
+2. Refactored TaskPojo -> AppSettingsPojo
+3. Updated Force Stop Simulation to detect already force stopped application & return back (Unstable)
+
+Pending:
+1. Force Stop Simulation is currently unstable.
+2. Need to Fix the flow due to launching MainActivity explicitly again from Service inorder to
+   close the settings activity once force stop simulation is complete.
+
+----------------------------------------------------------------------------------------------------
 Time Stamp: 20th November 2K22, 11:24 PM..!!
 
 5th Commit - SimulationService Added

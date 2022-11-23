@@ -2,17 +2,24 @@ package com.github.kohthecodemaster.service;
 
 import android.accessibilityservice.AccessibilityService;
 import android.accessibilityservice.AccessibilityServiceInfo;
+import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import com.github.kohthecodemaster.activity.MainActivity;
+import com.github.kohthecodemaster.pojo.AppSettingsPojo;
+
+import java.util.Arrays;
+import java.util.LinkedList;
 
 public class TaskKillerAccessibilityService extends AccessibilityService {
 
     private static final String TAG = "L0G-TaskKillerAccessibilityService";
     SimulationService simulationService;
+    public static LinkedList<AppSettingsPojo> tasksToBeKilled;
 
     @Override
     public void onServiceConnected() {
@@ -38,9 +45,18 @@ public class TaskKillerAccessibilityService extends AccessibilityService {
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
 
-//        testNodeInfoNotNull(event);
         handleEventForSimulation(event);
 //        relaunchMainActivity();
+
+    }
+
+    public static void launchApplicationSettings(Context context, String packageName) {
+
+        Intent intent = new Intent();
+        intent.setAction("android.settings.APPLICATION_DETAILS_SETTINGS");
+        intent.setData(Uri.fromParts("package", packageName, null));
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); //  Creates new instance & invoked onCreate()
+        context.startActivity(intent);
 
     }
 
@@ -69,15 +85,43 @@ public class TaskKillerAccessibilityService extends AccessibilityService {
             AccessibilityNodeInfo nodeInfo = event.getSource();
             if (nodeInfo == null) return;
 
-            simulationService.simulateMajor(nodeInfo);
+            Runnable runWhenAppAlreadyStopped = () -> {
 
-            if (simulationService.isOkClicked()) {
                 simulationService.resetFlags();
-                relaunchMainActivity();
-            }
+                if (!tasksToBeKilled.isEmpty()) {
+                    TaskKillerAccessibilityService.launchApplicationSettings(getApplicationContext(),
+                            tasksToBeKilled.removeFirst().getPackageName());
+                    Log.v(TAG, "handleEventForSimulation: Tasks Left: " +
+                            Arrays.toString(tasksToBeKilled.stream()
+                                    .map(AppSettingsPojo::getPackageName).toArray()));
+                } else {
+                    Log.v(TAG, "handleEventForSimulation: Tasks Completed - " + tasksToBeKilled.size());
+                    relaunchMainActivity();
+                }
+
+            };
+            simulationService.simulateMajor(nodeInfo, runWhenAppAlreadyStopped);
+            whenOkIsClicked();
+
 
         }
 //        Log.v(TAG, "handleEventForSimulation: End.");
+
+    }
+
+    private void whenOkIsClicked() {
+
+        if (simulationService.isOkClicked()) {
+            simulationService.resetFlags();
+            if (!tasksToBeKilled.isEmpty()) {
+                TaskKillerAccessibilityService.launchApplicationSettings(getApplicationContext(),
+                        tasksToBeKilled.removeFirst().getPackageName());
+                Log.v(TAG, "handleEventForSimulation: Tasks Left: " + tasksToBeKilled.size());
+            } else {
+                Log.v(TAG, "handleEventForSimulation: Tasks Completed - " + tasksToBeKilled.size());
+                relaunchMainActivity();
+            }
+        }
 
     }
 

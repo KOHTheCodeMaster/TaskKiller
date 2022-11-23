@@ -11,11 +11,11 @@ public class SimulationService {
     private boolean forceStopClicked;
     private boolean okClicked;
 
-    public void simulateMajor(AccessibilityNodeInfo nodeInfo) {
+    public void simulateMajor(AccessibilityNodeInfo nodeInfo, Runnable runWhenAppAlreadyStopped) {
 
         Runnable runnable = () -> {
 
-            if (!forceStopClicked) simulateForceStop(nodeInfo);
+            if (!forceStopClicked) simulateForceStop(nodeInfo, runWhenAppAlreadyStopped);
             else simulateOKBtnClick(nodeInfo);
 
             nodeInfo.recycle();     // recycle the nodeInfo object
@@ -32,8 +32,9 @@ public class SimulationService {
      * if it's available then proceed for Simulation by performing CLICK Action on behalf of user to Force Stop the application.
      *
      * @param nodeInfo Source Node Info of the Accessibility Event
+     * @param runWhenAppAlreadyStopped
      */
-    public void simulateForceStop(AccessibilityNodeInfo nodeInfo) {
+    public void simulateForceStop(AccessibilityNodeInfo nodeInfo, Runnable runWhenAppAlreadyStopped) {
 
 //        Log.v(TAG, "simulateForceStop: Begin Force Stop Simulation.");
         List<AccessibilityNodeInfo> list;
@@ -47,7 +48,12 @@ public class SimulationService {
         AccessibilityNodeInfo nodeForceStopBtn = list.get(0);
         if (nodeForceStopBtn.isClickable()) {
             forceStopClicked = nodeForceStopBtn.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-            if (forceStopClicked) Log.d(TAG, "simulateForceStop: Clicked on Force Stop Btn.");
+            if (forceStopClicked) Log.v(TAG, "simulateForceStop: Clicked on Force Stop Btn.");
+            else {
+                okClicked = true;
+                runWhenAppAlreadyStopped.run();
+                Log.v(TAG, "simulateForceStop: App already Force Stopped.");
+            }
         }
 //        Log.v(TAG, "simulateForceStop: End.");
 
@@ -83,6 +89,7 @@ public class SimulationService {
     public void resetFlags() {
         forceStopClicked = false;
         okClicked = false;
+        Log.v(TAG, "Reset Flags invoked.");
     }
 
     public boolean isOkClicked() {

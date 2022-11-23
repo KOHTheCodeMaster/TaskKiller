@@ -63,18 +63,11 @@ public class PackageHelper {
      *
      * @return list of all installed packages
      */
-    public List<PackageInfo> listAllPackages() {
-
-        Log.v(TAG, "listAllPackages: Begin.");
-        Log.v(TAG, "listAllPackages: package - " + context.getPackageName());
-
+    public static List<PackageInfo> listAllPackages(PackageManager packageManager) {
 //        List<ApplicationInfo> packageList = packageManager.getInstalledApplications(PackageManager.GET_META_DATA);   //  get a list of installed apps.
         List<PackageInfo> packageList = packageManager.getInstalledPackages(PackageManager.GET_META_DATA);   //  get a list of installed apps.
 
         Log.v(TAG, "listAllPackages: Iterating over packageList [" + packageList.size() + "]");
-        packageList.forEach(packageInfo -> Log.v(TAG, "Package: " + packageInfo.packageName));
-
-        Log.v(TAG, "listAllPackages: End.");
         return packageList;
     }
 

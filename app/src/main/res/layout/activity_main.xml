@@ -7,52 +7,40 @@
     android:background="@color/black"
     tools:context=".activity.MainActivity">
 
-    <Button
-        android:id="@+id/idConnectServiceBtn"
+    <TextView
+        android:id="@+id/idAppsSelectedTextView"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Connect"
+        android:layout_height="0dp"
+        android:text="Selected 0 / 100"
         android:textColor="@color/white"
-        app:layout_constraintBottom_toTopOf="@id/idDisconnectServiceBtn"
+        android:gravity="center"
+        app:layout_constraintBottom_toTopOf="@id/idRecyclerView"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.1"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:onClick="onConnectBtnClickListener"
-        tools:ignore="HardcodedText" />
-    <Button
-        android:id="@+id/idDisconnectServiceBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Disconnect"
-        android:textColor="@color/white"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/idRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@id/idPowerKillBtn"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.7"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/idConnectServiceBtn"
-        android:onClick="onDisconnectBtnClickListener"
-        tools:ignore="HardcodedText" />
+        app:layout_constraintTop_toBottomOf="@id/idAppsSelectedTextView" />
+
     <Button
         android:id="@+id/idPowerKillBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="POWER KILL"
-        android:textColor="@color/white"
-        app:layout_constraintBottom_toTopOf="@id/idEditText"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/idDisconnectServiceBtn"
         android:onClick="onPowerKillBtnClickListener"
-        tools:ignore="HardcodedText" />
-    <EditText
-        android:id="@+id/idEditText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Text Here"
+        android:text="POWER KILL"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/idPowerKillBtn"
+        app:layout_constraintTop_toBottomOf="@id/idRecyclerView"
         tools:ignore="HardcodedText" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

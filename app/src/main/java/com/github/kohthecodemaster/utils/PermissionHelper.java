@@ -8,11 +8,6 @@ import android.util.Log;
 public class PermissionHelper {
 
     private static final String TAG = "L0G-PermissionHelper";
-    private final Context context;
-
-    public PermissionHelper(Context context) {
-        this.context = context;
-    }
 
     /**
      * Check if the user has permitted the accessibility permission or not.
@@ -37,30 +32,9 @@ public class PermissionHelper {
     }
 
     /**
-     * Check if the user has permitted the accessibility permission or not.
-     *
-     * @return true when Accessibility Permission is available, Otherwise false.
-     */
-    @Deprecated
-    public boolean isAccessibilityPermissionAvailable() {
-
-        try {
-            int temp = Settings.Secure.getInt(
-                    context.getContentResolver(),
-                    Settings.Secure.ACCESSIBILITY_ENABLED
-            );
-            return temp == 1;
-        } catch (Settings.SettingNotFoundException e) {
-            e.printStackTrace();
-            Log.e(TAG, "isAccessibilityPermissionAvailable: Error finding setting, default accessibility is not found: " + e.getMessage());
-            return false;
-        }
-    }
-
-    /**
      * Prompt User to the System's Settings activity asking for Accessibility Permission.
      */
-    public void promptForAccessibilityPermission() {
+    public static void promptForAccessibilityPermission(Context context) {
 
 //        Log.v(TAG, "promptForAccessibilityPermission: Begin.");
 

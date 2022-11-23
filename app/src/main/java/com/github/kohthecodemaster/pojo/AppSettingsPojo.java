@@ -2,20 +2,20 @@ package com.github.kohthecodemaster.pojo;
 
 import androidx.annotation.NonNull;
 
-public class TaskPojo {
+public class AppSettingsPojo {
 
     private String packageName;
     private boolean isForceStopBtnClicked;
     private boolean isOKBtnClicked;
 
-    public TaskPojo(String packageName) {
+    public AppSettingsPojo(String packageName) {
         this.packageName = packageName;
     }
 
     @NonNull
     @Override
     public String toString() {
-        return "TaskPojo ->" +
+        return "AppSettingsPojo ->" +
                 "\npackageName - " + packageName +
                 "\nisForceStopBtnClicked - " + isForceStopBtnClicked +
                 "\nisOKBtnClicked - " + isOKBtnClicked;
