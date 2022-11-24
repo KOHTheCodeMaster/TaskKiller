@@ -50,6 +50,41 @@ public class TaskKillerAccessibilityService extends AccessibilityService {
 
     }
 
+    private void handleEventForSimulation(AccessibilityEvent event) {
+
+//        Log.v(TAG, "handleEventForSimulation: Begin.");
+        if (AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED == event.getEventType()) {
+
+            AccessibilityNodeInfo nodeInfo = event.getSource();
+            if (nodeInfo == null) return;
+
+            Runnable runWhenAppIsStopped = () -> {
+
+                Log.v(TAG, "runWhenAppIsStopped: Invoked.");
+                simulationService.resetFlags();
+                if (!tasksToBeKilled.isEmpty()) tasksToBeKilled.removeFirst();  //  Remove current App from the list as it's already stopped.
+
+                if (tasksToBeKilled.isEmpty()) {
+                    Log.v(TAG, "runWhenAppIsStopped: All Tasks Completed.");
+                    relaunchMainActivity();
+                } else {
+                    TaskKillerAccessibilityService.launchApplicationSettings(getApplicationContext(),
+                            tasksToBeKilled.getFirst().getPackageName());
+                    Log.v(TAG, "runWhenAppIsStopped: Tasks Left: " +
+                            Arrays.toString(tasksToBeKilled.stream()
+                                    .map(AppSettingsPojo::getPackageName).toArray()));
+                }
+
+            };
+
+            simulationService.simulateMajor(nodeInfo, runWhenAppIsStopped);
+//            if (simulationService.isOkClicked()) runWhenAppIsStopped.run();
+
+        }
+//        Log.v(TAG, "handleEventForSimulation: End.");
+
+    }
+
     public static void launchApplicationSettings(Context context, String packageName) {
 
         Intent intent = new Intent();
@@ -74,54 +109,6 @@ public class TaskKillerAccessibilityService extends AccessibilityService {
         intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_NEW_TASK);
 */
         getApplicationContext().startActivity(intent);
-
-    }
-
-    private void handleEventForSimulation(AccessibilityEvent event) {
-
-//        Log.v(TAG, "handleEventForSimulation: Begin.");
-        if (AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED == event.getEventType()) {
-
-            AccessibilityNodeInfo nodeInfo = event.getSource();
-            if (nodeInfo == null) return;
-
-            Runnable runWhenAppAlreadyStopped = () -> {
-
-                simulationService.resetFlags();
-                if (!tasksToBeKilled.isEmpty()) {
-                    TaskKillerAccessibilityService.launchApplicationSettings(getApplicationContext(),
-                            tasksToBeKilled.removeFirst().getPackageName());
-                    Log.v(TAG, "handleEventForSimulation: Tasks Left: " +
-                            Arrays.toString(tasksToBeKilled.stream()
-                                    .map(AppSettingsPojo::getPackageName).toArray()));
-                } else {
-                    Log.v(TAG, "handleEventForSimulation: Tasks Completed - " + tasksToBeKilled.size());
-                    relaunchMainActivity();
-                }
-
-            };
-            simulationService.simulateMajor(nodeInfo, runWhenAppAlreadyStopped);
-            whenOkIsClicked();
-
-
-        }
-//        Log.v(TAG, "handleEventForSimulation: End.");
-
-    }
-
-    private void whenOkIsClicked() {
-
-        if (simulationService.isOkClicked()) {
-            simulationService.resetFlags();
-            if (!tasksToBeKilled.isEmpty()) {
-                TaskKillerAccessibilityService.launchApplicationSettings(getApplicationContext(),
-                        tasksToBeKilled.removeFirst().getPackageName());
-                Log.v(TAG, "handleEventForSimulation: Tasks Left: " + tasksToBeKilled.size());
-            } else {
-                Log.v(TAG, "handleEventForSimulation: Tasks Completed - " + tasksToBeKilled.size());
-                relaunchMainActivity();
-            }
-        }
 
     }
 

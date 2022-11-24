@@ -11,12 +11,12 @@ public class SimulationService {
     private boolean forceStopClicked;
     private boolean okClicked;
 
-    public void simulateMajor(AccessibilityNodeInfo nodeInfo, Runnable runWhenAppAlreadyStopped) {
+    public void simulateMajor(AccessibilityNodeInfo nodeInfo, Runnable runWhenAppIsStopped) {
 
         Runnable runnable = () -> {
 
-            if (!forceStopClicked) simulateForceStop(nodeInfo, runWhenAppAlreadyStopped);
-            else simulateOKBtnClick(nodeInfo);
+            if (!forceStopClicked) simulateForceStop(nodeInfo, runWhenAppIsStopped);
+            else simulateOKBtnClick(nodeInfo, runWhenAppIsStopped);
 
             nodeInfo.recycle();     // recycle the nodeInfo object
 
@@ -40,22 +40,22 @@ public class SimulationService {
         List<AccessibilityNodeInfo> list;
         String idForceBtn = "com.android.settings:id/button3";
 
-        //  Find nodes with text "Force Stop" or button id
 //        list = nodeInfo.findAccessibilityNodeInfosByText("Force Stop");
         list = nodeInfo.findAccessibilityNodeInfosByViewId(idForceBtn);
         if (list.isEmpty()) return;
+
+        Log.v(TAG, "simulateForceStop: Begin Force Stop Simulation.");
 
         AccessibilityNodeInfo nodeForceStopBtn = list.get(0);
         if (nodeForceStopBtn.isClickable()) {
             forceStopClicked = nodeForceStopBtn.performAction(AccessibilityNodeInfo.ACTION_CLICK);
             if (forceStopClicked) Log.v(TAG, "simulateForceStop: Clicked on Force Stop Btn.");
             else {
-                okClicked = true;
-                runWhenAppAlreadyStopped.run();
                 Log.v(TAG, "simulateForceStop: App already Force Stopped.");
+                runWhenAppAlreadyStopped.run();
             }
         }
-//        Log.v(TAG, "simulateForceStop: End.");
+        Log.v(TAG, "simulateForceStop: End.");
 
     }
 
@@ -65,10 +65,11 @@ public class SimulationService {
      * Click on OK Button in order to force stop the application.
      *
      * @param nodeInfo Source Node Info of the Accessibility Event
+     * @param runWhenAppIsStopped
      */
-    public void simulateOKBtnClick(AccessibilityNodeInfo nodeInfo) {
+    public void simulateOKBtnClick(AccessibilityNodeInfo nodeInfo, Runnable runWhenAppIsStopped) {
 
-//        Log.v(TAG, "simulateOKBtnClick: Begin.");
+        Log.v(TAG, "simulateOKBtnClick: Begin.");
         List<AccessibilityNodeInfo> list;
         String idOkBtn = "android:id/button1";
 
@@ -80,9 +81,12 @@ public class SimulationService {
         AccessibilityNodeInfo nodeOKBtn = list.get(0);
         if (nodeOKBtn.isClickable()) {
             okClicked = nodeOKBtn.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-            if (okClicked) Log.d(TAG, "simulateOKBtnClick: Clicked on OK Btn.");
+            if (okClicked) {
+                Log.d(TAG, "simulateOKBtnClick: Clicked on OK Btn.");
+                runWhenAppIsStopped.run();
+            }
         }
-//        Log.v(TAG, "simulateOKBtnClick: End.");
+        Log.v(TAG, "simulateOKBtnClick: End.");
 
     }
 

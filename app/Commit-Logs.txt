@@ -5,6 +5,17 @@ Commit-History:
 ----------------------------------------------------------------------------------------------------
 Time Stamp: 23rd November 2K22, 11:37 PM..!!
 
+7th Commit - Fixed Flow & OK Btn Click Simulation
+
+1. Fixed the flow due to launching MainActivity explicitly again from Service inorder to
+   close the settings activity once force stop simulation is complete.
+
+Pending:
+1. Simulation process is still currently unstable.
+
+----------------------------------------------------------------------------------------------------
+Time Stamp: 23rd November 2K22, 11:37 PM..!!
+
 6th Commit - UI Added.
 
 1. Added RecyclerView, Adapter, TaskRowPojo to display installed applications in UI

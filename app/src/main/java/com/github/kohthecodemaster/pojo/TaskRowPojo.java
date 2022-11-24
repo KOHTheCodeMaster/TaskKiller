@@ -1,11 +1,14 @@
 package com.github.kohthecodemaster.pojo;
 
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 
 public class TaskRowPojo {
 
+    private static final String TAG = "L0G-TaskRowPojo";
     private String title;
     private String packageName;
     private Drawable imgIcon;
@@ -21,6 +24,23 @@ public class TaskRowPojo {
         return new TaskRowPojo(packageInfo.applicationInfo.loadLabel(packageManager).toString(),
                 packageInfo.applicationInfo.packageName,
                 packageInfo.applicationInfo.loadIcon(packageManager));
+    }
+
+    public static TaskRowPojo generatePojo(ApplicationInfo appInfo, PackageManager packageManager) {
+        String appTitle = "TITLE";
+        try {
+            appTitle = appInfo.loadLabel(packageManager) != null && appInfo.loadLabel(packageManager).length() > 0
+                    ? appInfo.loadLabel(packageManager).toString()
+                    : appTitle;
+        } catch (Exception e) {
+            Log.d(TAG, "generatePojo: Exception - " + e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
+        return new TaskRowPojo(appTitle,
+                appInfo.packageName,
+                appInfo.loadIcon(packageManager));
+
     }
 
     public String getTitle() {

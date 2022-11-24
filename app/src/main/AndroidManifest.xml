@@ -19,6 +19,7 @@
         android:theme="@style/Theme.TaskKiller">
         <activity
             android:name=".activity.MainActivity"
+            android:launchMode="singleTop"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
